@@ -15,20 +15,23 @@ static int _pbmNextInt(const char **p, const char *end) {
   }
 }
 
-int imgmap_pgm_readHeader(IMGMAP_FILE *fmap, int type,
-    const char **p, const char *end) {
+int imgmap_pgm_readHeader(IMGMAP_FILE *fmap) {
+  const char *p = (const char *) fmap->map;
+  const char *end = (const char *) fmap->end;
+  int type = p[1] - '0';
+  p += 2;
   // Read sx and sy
-  if((fmap->sx = _pbmNextInt(p,end)) < 0)
+  if((fmap->sx = _pbmNextInt(&p,end)) < 0)
     return IMGMAP_EPARSE;
-  if((fmap->sy = _pbmNextInt(p,end)) < 0)
+  if((fmap->sy = _pbmNextInt(&p,end)) < 0)
     return IMGMAP_EPARSE;
   if(type != 1 && type !=4)  { // read max_value field of grey/RGB image
-    if((fmap->max_val = _pbmNextInt(p,end)) < 0)
+    if((fmap->max_val = _pbmNextInt(&p,end)) < 0)
       return IMGMAP_EPARSE;
   }
   else // B&W image do not have max_value field (max_val == 1)
     fmap->max_val = 1;
-  ++(*p); // Ignore one space character
+  ++p; // Ignore one space character
   fmap->data = (void*) p;
   // Configure fmap in order to match the file structure
 

@@ -44,7 +44,15 @@ inline static int imgmap_parse_readByte(const char **p, const char *end) {
 inline static int imgmap_parse_readShortBE(const char **p, const char *end) {
   if(*p >= end-1)
     return -1;
-  int ret = (*p)[0] << 8 | (*p)[1];
+  int ret = ((*p)[0] << 8) | (*p)[1];
+  *p += 2;
+  return ret;
+}
+
+inline static int imgmap_parse_readShortLE(const char **p, const char *end) {
+  if(*p >= end-1)
+    return -1;
+  int ret = (*p)[0] | ((*p)[1] << 8);
   *p += 2;
   return ret;
 }
