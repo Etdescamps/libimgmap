@@ -97,6 +97,8 @@ int imgmap_createImg(IMGMAP_FILE *fmap, const char *name, int mode,
 int imgmap_getDimensions(const IMGMAP_FILE *fmap, int *sx, int *sy,
     int *nc, int *nl);
 
+int imgmap_getFloatValue(IMGMAP_FILE *fmap, float *dest);
+
 #ifdef __cplusplus
 }
 #endif

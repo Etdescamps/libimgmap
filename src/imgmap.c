@@ -18,6 +18,7 @@
 #include "imgmap.h"
 #include "file_map.h"
 #include "file_types.h"
+#include "data_conv.h"
 
 #define TEXT_BUFFER_SIZE__ 256
 
@@ -87,4 +88,32 @@ int imgmap_createImg(IMGMAP_FILE *fmap, const char *name, int mode,
   return IMGMAP_ENOTSUPPORTED;
 }
 
+int imgmap_getFloatValue(IMGMAP_FILE *fmap, float *dest) {
+  if(!fmap->data)
+    return IMGMAP_EINVALIDFILE;
+  size_t numPixels = fmap->nc*fmap->sx*fmap->sy*fmap->nl;
+  switch(fmap->data_type) {
+    case IMGMAP_RAW1BYTE:
+      imgmap_convByteToFloat(dest, (const char *) fmap->data,
+          numPixels, fmap->max_val);
+    case IMGMAP_RAW2BYTEBE:
+      if(is_short16LE())
+        imgmap_convInvShortToFloat(dest, (const unsigned short*) fmap->data,
+            numPixels, fmap->max_val);
+      else
+        imgmap_convShortToFloat(dest, (const unsigned short*) fmap->data,
+            numPixels, fmap->max_val);
+    case IMGMAP_RAW2BYTELE:
+      if(is_short16LE())
+        imgmap_convShortToFloat(dest, (const unsigned short*) fmap->data,
+            numPixels, fmap->max_val);
+      else
+        imgmap_convInvShortToFloat(dest, (const unsigned short*) fmap->data,
+            numPixels, fmap->max_val);
+    case IMGMAP_RAW1BPP:
+    case IMGMAP_TEXTPBM:
+    default:
+      return IMGMAP_EINVALIDFILE;
+  }
+}
 

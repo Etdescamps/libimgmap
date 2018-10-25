@@ -18,16 +18,30 @@
 #define IMGMAP_DATA_CONV_H__
 
 #include <stddef.h>
-//#include <stdint.h>
+#include <stdint.h>
 
 void imgmap_convByteToFloat(float *val, const char *p, size_t size,
     int max_val);
 void imgmap_convShortToFloat(float *val, const unsigned short *p,
     size_t size, int max_val);
+void imgmap_convInvShortToFloat(float *val, const unsigned short *p,
+    size_t size, int max_val);
 void imgmap_convFloatToShort(unsigned short *val, const float *p,
+    size_t size, int max_val);
+void imgmap_convFloatToInvShort(unsigned short *val, const float *p,
     size_t size, int max_val);
 void imgmap_convFloatToByte(char *val, const float *p,
     size_t size, int max_val);
+void imgmap_convPBMToFloat(float *dest, const char *src,
+    size_t len, size_t sx);
+
+inline static int is_short16LE() {
+  union {
+    uint16_t i;
+    char c[2];
+  } x = {1};
+  return x.c[0];
+}
 
 #endif
 
