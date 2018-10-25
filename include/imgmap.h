@@ -94,6 +94,9 @@ int imgmap_open(IMGMAP_FILE *fmap, const char *name, int mode);
 int imgmap_createImg(IMGMAP_FILE *fmap, const char *name, int mode,
     int file_type, int nc, int sx, int sy, int max_val);
 
+int imgmap_getDimensions(const IMGMAP_FILE *fmap, int *sx, int *sy,
+    int *nc, int *nl);
+
 #ifdef __cplusplus
 }
 #endif

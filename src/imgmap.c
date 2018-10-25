@@ -41,6 +41,33 @@ int imgmap_open(IMGMAP_FILE *fmap, const char *name, int mode) {
   return _openFile(fmap);
 }
 
+int imgmap_getDimensions(const IMGMAP_FILE *fmap, int *sx, int *sy,
+    int *nc, int *nl) {
+  if(!fmap)
+    return -1;
+  if(sx) {
+    *sx = fmap->sx;
+    if(*sx <= 0)
+      return -2;
+  }
+  if(sy) {
+    *sy = fmap->sy;
+    if(*sy <= 0)
+      return -2;
+  }
+  if(nc) {
+    *nc = fmap->nc;
+    if(*nc <= 0)
+      return -2;
+  }
+  if(nl) {
+    *nl = fmap->nl;
+    if(*nl <= 0)
+      return -2;
+  }
+  return 0;
+}
+
 int imgmap_createImg(IMGMAP_FILE *fmap, const char *name, int mode,
     int file_type, int nc, int sx, int sy, int max_val) {
   int filetype;
