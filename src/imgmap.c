@@ -41,14 +41,23 @@ int imgmap_open(IMGMAP_FILE *fmap, const char *name, int mode) {
   return _openFile(fmap);
 }
 
-int imgmap_createGreyScaleImg(IMGMAP_FILE *fmap, const char *name, int mode,
-    int file_type, int sx, int sy, int max_val) {
+int imgmap_createImg(IMGMAP_FILE *fmap, const char *name, int mode,
+    int file_type, int nc, int sx, int sy, int max_val) {
+  int filetype;
   fmap->sx = sx;
   fmap->sy = sy;
-  fmap->nc = 1;
+  fmap->nc = nc;
   switch(file_type) {
     case IMGMAPFILE_PBM:
-      return imgmap_createPBM(fmap, name, mode, 5, max_val);
+      if(nc == 3)
+        filetype = 6;
+      else if(max_val == 1)
+        filetype = 4;
+      else
+        filetype = 5;
+      return imgmap_createPBM(fmap, name, mode, filetype, max_val);
   }
   return IMGMAP_ENOTSUPPORTED;
 }
+
+

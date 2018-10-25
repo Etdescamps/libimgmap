@@ -16,6 +16,11 @@
 
 #ifndef IMGMAP_IMGMAP_H__
 #define IMGMAP_IMGMAP_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stddef.h>
 
 enum IMGMAP_ERRORS {
@@ -86,12 +91,12 @@ typedef struct {
 
 int imgmap_close(IMGMAP_FILE *fmap);
 int imgmap_open(IMGMAP_FILE *fmap, const char *name, int mode);
-int imgmap_createGreyScaleImg(IMGMAP_FILE *fmap, const char *name, int mode,
-    int file_type, int sx, int sy, int max_val);
-int imgmap_createRGBImg(IMGMAP_FILE *fmap, const char *name, int mode,
-    int file_type, int sx, int sy, int max_val);
-int imgmap_createBitmapImg(IMGMAP_FILE *fmap, const char *name, int mode,
-    int file_type, int sx, int sy, int num_colors);
+int imgmap_createImg(IMGMAP_FILE *fmap, const char *name, int mode,
+    int file_type, int nc, int sx, int sy, int max_val);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 

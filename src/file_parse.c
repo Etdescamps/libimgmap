@@ -60,3 +60,18 @@ int imgmap_parse_readNTextShort(short *val, size_t size,
   return i;
 }
 
+int imgmap_parse_readNTextFloat(float *val, size_t size, int max_val,
+    const char **p, const char *end) {
+  int i;
+  float ratio = 1.0/((float) max_val);
+  for(i = 0; i < size; i++) {
+    if(imgmap_parse_space(p, end)<0)
+      return i;
+    int k = _readPosInt(p, end);
+    if(k<0 || k > max_val)
+      return i;
+    val[i] = ratio*k;
+  }
+  return i;
+}
+

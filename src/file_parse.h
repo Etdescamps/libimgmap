@@ -82,5 +82,8 @@ int imgmap_parse_readNTextByte(char *val, size_t size,
 int imgmap_parse_readNTextShort(short *val, size_t size,
     const char **p, const char *end);
 
+int imgmap_parse_readNTextFloat(float *val, size_t size, int max_val,
+    const char **p, const char *end);
+
 #endif //LIBIMGMAP_TEXT_PARSE_H__
 
