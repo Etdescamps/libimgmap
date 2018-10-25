@@ -33,7 +33,7 @@ void imgmap_convFloatToInvShort(unsigned short *val, const float *p,
 void imgmap_convFloatToByte(char *val, const float *p,
     size_t size, int max_val);
 void imgmap_convPBMToFloat(float *dest, const char *src,
-    size_t len, size_t sx);
+    size_t nlines, size_t sx);
 
 inline static int is_short16LE() {
   union {

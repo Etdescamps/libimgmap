@@ -15,8 +15,10 @@
  */
 
 #include <sys/mman.h>
+#include <string.h>
 #include "imgmap.h"
 #include "file_map.h"
+#include "file_parse.h"
 #include "file_types.h"
 #include "data_conv.h"
 
@@ -91,11 +93,12 @@ int imgmap_createImg(IMGMAP_FILE *fmap, const char *name, int mode,
 int imgmap_getFloatValue(IMGMAP_FILE *fmap, float *dest) {
   if(!fmap->data)
     return IMGMAP_EINVALIDFILE;
-  size_t numPixels = fmap->nc*fmap->sx*fmap->sy*fmap->nl;
+  size_t numPixels = fmap->nc*fmap->sx*fmap->sy*fmap->nl, n;
+  const char *data = (const char*) fmap->data;
   switch(fmap->data_type) {
     case IMGMAP_RAW1BYTE:
-      imgmap_convByteToFloat(dest, (const char *) fmap->data,
-          numPixels, fmap->max_val);
+      imgmap_convByteToFloat(dest, data, numPixels, fmap->max_val);
+      return IMGMAP_OK;
     case IMGMAP_RAW2BYTEBE:
       if(is_short16LE())
         imgmap_convInvShortToFloat(dest, (const unsigned short*) fmap->data,
@@ -103,6 +106,7 @@ int imgmap_getFloatValue(IMGMAP_FILE *fmap, float *dest) {
       else
         imgmap_convShortToFloat(dest, (const unsigned short*) fmap->data,
             numPixels, fmap->max_val);
+      return IMGMAP_OK;
     case IMGMAP_RAW2BYTELE:
       if(is_short16LE())
         imgmap_convShortToFloat(dest, (const unsigned short*) fmap->data,
@@ -110,8 +114,16 @@ int imgmap_getFloatValue(IMGMAP_FILE *fmap, float *dest) {
       else
         imgmap_convInvShortToFloat(dest, (const unsigned short*) fmap->data,
             numPixels, fmap->max_val);
+      return IMGMAP_OK;
     case IMGMAP_RAW1BPP:
+      imgmap_convPBMToFloat(dest, data, fmap->sy, fmap->sx);
+      return IMGMAP_OK;
     case IMGMAP_TEXTPBM:
+      n = imgmap_parse_readNTextFloat(dest, numPixels, fmap->max_val,
+          &data, (const char*) fmap->end);
+      if(n<numPixels)
+        memset(&dest[n], 0, (numPixels-n)*sizeof(float));
+      return IMGMAP_OK;
     default:
       return IMGMAP_EINVALIDFILE;
   }

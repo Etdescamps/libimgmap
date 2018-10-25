@@ -93,12 +93,11 @@ void imgmap_convFloatToByte(char *val, const float *p,
 }
 
 void imgmap_convPBMToFloat(float *dest, const char *src,
-    size_t len, size_t sx) {
+    size_t nlines, size_t sx) {
   size_t lx = sx/8, rx = sx%8;
   size_t dx = rx ? lx+1 : lx;
-  size_t nx = len/dx;
   size_t i, j, k;
-  for(i=0; i<nx; ++i) {
+  for(i=0; i<nlines; ++i) {
     const char *v = &src[i*dx];
     size_t l = i*sx;
     for(j=0; j<lx; ++j) {
