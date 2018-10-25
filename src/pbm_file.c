@@ -28,8 +28,11 @@ static int _pbmNextInt(const char **p, const char *end) {
     if(ret < IMGMAP_OK)
       return ret;
     // Comment section
-    if(**p == '#')
-      return imgmap_parse_moveNextLine(p, end);
+    if(**p == '#') {
+      ret = imgmap_parse_moveNextLine(p, end);
+      if(ret < IMGMAP_OK)
+        return ret;
+    }
     else // Shall be another the first character of an integer
       return imgmap_parse_readPosInt(p, end);
   }
@@ -60,7 +63,7 @@ static size_t _pgm_configure(IMGMAP_FILE *fmap, int type) {
     fmap->data_type = IMGMAP_TEXTPBM;
     fmap->dx = -1; // Not applicable: text file
   }
-  if(type == 4) {
+  else if(type == 4) {
     fmap->data_type = IMGMAP_RAW1BPP;
     fmap->dx = ((fmap->sx-1)/8+1);
   }

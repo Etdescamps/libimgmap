@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
   IMGMAP_FILE fmap;
   int ret;
   if((ret = imgmap_open(&fmap, argv[1], IMGMAP_READPRIVATE))<0) {
-    fprintf(stderr, "Error %d while openind %s\n", ret, argv[1]);
+    fprintf(stderr, "Error %d while opening %s\n", ret, argv[1]);
     return ret;
   }
   int sx, sy, nc, nl;
