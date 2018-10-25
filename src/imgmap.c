@@ -73,21 +73,19 @@ int imgmap_getDimensions(const IMGMAP_FILE *fmap, int *sx, int *sy,
 
 int imgmap_createImg(IMGMAP_FILE *fmap, const char *name, int mode,
     int file_type, int nc, int sx, int sy, int max_val) {
-  int filetype;
   fmap->sx = sx;
   fmap->sy = sy;
   fmap->nc = nc;
   switch(file_type) {
     case IMGMAPFILE_PBM:
-      if(nc == 3)
-        filetype = 6;
-      else if(max_val == 1)
-        filetype = 4;
-      else
-        filetype = 5;
-      return imgmap_createPBM(fmap, name, mode, filetype, max_val);
+      return imgmap_createPBM(fmap, name, mode, 4, max_val);
+    case IMGMAPFILE_PGM:
+      return imgmap_createPBM(fmap, name, mode, 5, max_val);
+    case IMGMAPFILE_PPM:
+      return imgmap_createPBM(fmap, name, mode, 6, max_val);
+    default:
+      return IMGMAP_ENOTSUPPORTED;
   }
-  return IMGMAP_ENOTSUPPORTED;
 }
 
 int imgmap_getFloatValue(IMGMAP_FILE *fmap, float *dest) {

@@ -68,10 +68,12 @@ enum IMGMAP_PALETTES {
 enum IMGMAP_FILETYPE {
   IMGMAPFILE_UKN    = 0, // File type needs to be specified
   IMGMAPFILE_PBM    = 1, // PBM/PGM/PPM text and binary files
-  IMGMAPFILE_BMP    = 2, // Old Windows format
-  IMGMAPFILE_PCX    = 3, // Another old format for DOS/Windows
-  IMGMAPFILE_TIFFLE = 4, // Tiff on x86
-  IMGMAPFILE_TIFFBE = 5  // Tiff on 68k
+  IMGMAPFILE_PGM    = 2, // PBM/PGM/PPM text and binary files
+  IMGMAPFILE_PPM    = 3, // PBM/PGM/PPM text and binary files
+  IMGMAPFILE_BMP    = 4, // Old Windows format
+  IMGMAPFILE_PCX    = 5, // Another old format for DOS/Windows
+  IMGMAPFILE_TIFFLE = 6, // Tiff on x86
+  IMGMAPFILE_TIFFBE = 7  // Tiff on 68k
 };
 
 typedef struct {
