@@ -38,7 +38,7 @@ static inline uint16_t _bswap16 (uint16_t x)
 
 
 // TODO: more optimized version using SIMD
-void imgmap_convByteToFloat(float *val, const char *p, size_t size,
+void imgmap_convByteToFloat(float *val, const unsigned char *p, size_t size,
     int max_val) {
   size_t i;
   float ratio = 1.0/((float) max_val);

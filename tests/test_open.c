@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "imgmap.h"
 
 int main(int argc, char **argv) {
@@ -10,7 +11,18 @@ int main(int argc, char **argv) {
     fprintf(stderr, "Error %d while openind %s\n", ret, argv[1]);
     return ret;
   }
-  printf("%s: %d %d %d %d %d\n", argv[1], fmap.data_type, fmap.sx, fmap.sy,
+  int sx, sy, nc, nl;
+  imgmap_getDimensions(&fmap, &sx, &sy, &nc, &nl);
+  size_t i, nPix = sx*sy*nc*nl;
+  float *f = calloc(sx*sy*nc*nl, sizeof(float));
+  imgmap_getFloatValue(&fmap, f);
+  for(i = 0; i < nPix; i++) {
+    printf("%.1f ", f[i]);
+    if(i%20 == 0)
+      printf("\n");
+  }
+  free(f);
+  printf("\n%s: %d %d %d %d %d\n", argv[1], fmap.data_type, fmap.sx, fmap.sy,
       fmap.max_val, fmap.nc);
   return imgmap_close(&fmap);
 }

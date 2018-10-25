@@ -94,25 +94,26 @@ int imgmap_getFloatValue(IMGMAP_FILE *fmap, float *dest) {
   if(!fmap->data)
     return IMGMAP_EINVALIDFILE;
   size_t numPixels = fmap->nc*fmap->sx*fmap->sy*fmap->nl, n;
-  const char *data = (const char*) fmap->data;
+  const char *data = fmap->data;
   switch(fmap->data_type) {
     case IMGMAP_RAW1BYTE:
-      imgmap_convByteToFloat(dest, data, numPixels, fmap->max_val);
+      imgmap_convByteToFloat(dest, (const unsigned char *)data,
+          numPixels, fmap->max_val);
       return IMGMAP_OK;
     case IMGMAP_RAW2BYTEBE:
       if(is_short16LE())
-        imgmap_convInvShortToFloat(dest, (const unsigned short*) fmap->data,
+        imgmap_convInvShortToFloat(dest, (const unsigned short*) data,
             numPixels, fmap->max_val);
       else
-        imgmap_convShortToFloat(dest, (const unsigned short*) fmap->data,
+        imgmap_convShortToFloat(dest, (const unsigned short*) data,
             numPixels, fmap->max_val);
       return IMGMAP_OK;
     case IMGMAP_RAW2BYTELE:
       if(is_short16LE())
-        imgmap_convShortToFloat(dest, (const unsigned short*) fmap->data,
+        imgmap_convShortToFloat(dest, (const unsigned short*) data,
             numPixels, fmap->max_val);
       else
-        imgmap_convInvShortToFloat(dest, (const unsigned short*) fmap->data,
+        imgmap_convInvShortToFloat(dest, (const unsigned short*) data,
             numPixels, fmap->max_val);
       return IMGMAP_OK;
     case IMGMAP_RAW1BPP:

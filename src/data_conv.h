@@ -20,7 +20,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-void imgmap_convByteToFloat(float *val, const char *p, size_t size,
+void imgmap_convByteToFloat(float *val, const unsigned char *p, size_t size,
     int max_val);
 void imgmap_convShortToFloat(float *val, const unsigned short *p,
     size_t size, int max_val);
