@@ -66,7 +66,7 @@ int imgmap_createBuffer(IMGMAP_FILE *fmap, int data_type,
   size_t dx = nc*sx;
   size_t numValues = nl*sy*dx;
   size_t size;
-  switch(data_type) {
+  switch(data_type & IMGMAP_TYPEMASK) {
     case IMGMAP_RAW1BYTE:
       size = numValues;
       break;
@@ -167,7 +167,7 @@ int imgmap_getFloatValue(IMGMAP_FILE *fmap, float *dest) {
     return IMGMAP_EINVALIDFILE;
   size_t numPixels = fmap->nc*fmap->sx*fmap->sy*fmap->nl, n;
   const char *data = fmap->data;
-  switch(fmap->data_type) {
+  switch(fmap->data_type & IMGMAP_TYPEMASK) {
     case IMGMAP_RAW1BYTE:
       imgmap_convByteToFloat(dest, (const unsigned char *)data,
           numPixels, fmap->max_val);
@@ -207,7 +207,7 @@ int imgmap_pushFloatValue(IMGMAP_FILE *fmap, const float *src) {
     return IMGMAP_EINVALIDFILE;
   size_t numPixels = fmap->nc*fmap->sx*fmap->sy*fmap->nl;
   unsigned char *data = fmap->data;
-  switch(fmap->data_type) {
+  switch(fmap->data_type & IMGMAP_TYPEMASK) {
     case IMGMAP_RAW1BYTE:
       imgmap_convFloatToByte(data, src, numPixels, fmap->max_val);
       return IMGMAP_OK;
@@ -233,5 +233,16 @@ int imgmap_pushFloatValue(IMGMAP_FILE *fmap, const float *src) {
     default:
       return IMGMAP_EINVALIDFILE;
   }
+}
+
+void *imgmap_getRaw(IMGMAP_FILE *fmap, int *data_type, int *palette_type,
+    void **palette) {
+  if(data_type)
+    *data_type = fmap->data_type;
+  if(palette_type)
+    *palette_type = fmap->palette_type;
+  if(palette)
+    *palette = fmap->palette;
+  return fmap->data;
 }
 

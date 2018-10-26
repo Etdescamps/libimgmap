@@ -66,6 +66,9 @@ enum IMGMAP_TYPES {
   IMGMAP_FLOAT64BE  = 10,
   IMGMAP_FLOAT16LE  = 11,
   IMGMAP_FLOAT16BE  = 12,
+  // Use the low 16 bits for the type and the high 16 for flags
+  IMGMAP_TYPEMASK    = 0x0000FFFF,
+  IMGMAP_WITHPALETTE = 0x00010000  // Use a palette of colors
 };
 
 enum IMGMAP_PALETTES {
@@ -123,6 +126,9 @@ int imgmap_syncPart(IMGMAP_FILE *fmap, int flags, void *begin, void *end);
 
 int imgmap_getDimensions(const IMGMAP_FILE *fmap, int *sx, int *sy,
     int *nc, int *nl);
+
+void *imgmap_getRaw(IMGMAP_FILE *fmap, int *data_type, int *palette_type,
+    void **palette);
 
 int imgmap_getFloatValue(IMGMAP_FILE *fmap, float *dest);
 int imgmap_pushFloatValue(IMGMAP_FILE *fmap, const float *src);
