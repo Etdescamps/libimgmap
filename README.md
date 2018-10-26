@@ -26,6 +26,7 @@ as the address space of these system is quite huge.
 This library is distributed under an ISC-like license (simplified BSD license).
 
 ## Limitations
-Windows is not supported as its file mapping methods are quite different.
-Heavily based on UNIX systems features.
+Windows is not supported as its file mapping methods are quite different from
+those used by Unix likes. This library is heavily relying on features provided
+by a POSIX environment, so it is not portable to non-Unix operating systems.
 
