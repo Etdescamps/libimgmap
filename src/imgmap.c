@@ -143,8 +143,9 @@ int imgmap_getDimensions(const IMGMAP_FILE *fmap, int *sx, int *sy,
   return 0;
 }
 
-int imgmap_createImg(IMGMAP_FILE *fmap, const char *name, int mode,
+int imgmap_createImg(IMGMAP_FILE *fmap, const char *name,
     int file_type, int nc, int sx, int sy, int max_val) {
+  int mode = IMGMAP_RWSHARED; // The only suitable mode for creating file
   fmap->sx = sx;
   fmap->sy = sy;
   fmap->nc = nc;

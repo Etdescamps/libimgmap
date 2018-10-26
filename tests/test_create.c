@@ -6,7 +6,7 @@
 int test_createImg(const char *name, const float *values,
     int nc, int sx, int sy, int max_val) {
   IMGMAP_FILE fmap;
-  int ret = imgmap_createImg(&fmap, name, IMGMAP_RWSHARED,
+  int ret = imgmap_createImg(&fmap, name,
       IMGMAPFILE_UKN, nc, sx, sy, max_val);
   if(ret<0)
     return ret;

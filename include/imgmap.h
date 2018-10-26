@@ -113,7 +113,7 @@ int imgmap_free(IMGMAP_FILE *fmap);
 
 int imgmap_close(IMGMAP_FILE *fmap);
 int imgmap_open(IMGMAP_FILE *fmap, const char *name, int mode);
-int imgmap_createImg(IMGMAP_FILE *fmap, const char *name, int mode,
+int imgmap_createImg(IMGMAP_FILE *fmap, const char *name,
     int file_type, int nc, int sx, int sy, int max_val);
 int imgmap_createBuffer(IMGMAP_FILE *fmap, int data_type,
     int nl, int nc, int sx, int sy);
