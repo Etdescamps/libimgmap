@@ -130,8 +130,8 @@ int imgmap_getDimensions(const IMGMAP_FILE *fmap, int *sx, int *sy,
 void *imgmap_getRaw(IMGMAP_FILE *fmap, int *data_type, int *palette_type,
     void **palette);
 
-int imgmap_getFloatValue(IMGMAP_FILE *fmap, float *dest);
-int imgmap_pushFloatValue(IMGMAP_FILE *fmap, const float *src);
+int imgmap_getFloatValues(IMGMAP_FILE *fmap, float *dest);
+int imgmap_pushFloatValues(IMGMAP_FILE *fmap, const float *src);
 
 #ifdef __cplusplus
 }

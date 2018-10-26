@@ -10,7 +10,7 @@ int test_createImg(const char *name, const float *values,
       IMGMAPFILE_UKN, nc, sx, sy, max_val);
   if(ret<0)
     return ret;
-  ret = imgmap_pushFloatValue(&fmap, values);
+  ret = imgmap_pushFloatValues(&fmap, values);
   if(ret<0)
     return ret;
   ret = imgmap_sync(&fmap, IMGMAP_ASYNC);

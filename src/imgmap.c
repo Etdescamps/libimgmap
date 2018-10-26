@@ -163,7 +163,7 @@ int imgmap_createImg(IMGMAP_FILE *fmap, const char *name,
   }
 }
 
-int imgmap_getFloatValue(IMGMAP_FILE *fmap, float *dest) {
+int imgmap_getFloatValues(IMGMAP_FILE *fmap, float *dest) {
   if(!fmap->data)
     return IMGMAP_EINVALIDFILE;
   size_t numPixels = fmap->nc*fmap->sx*fmap->sy*fmap->nl, n;
@@ -203,7 +203,7 @@ int imgmap_getFloatValue(IMGMAP_FILE *fmap, float *dest) {
   }
 }
 
-int imgmap_pushFloatValue(IMGMAP_FILE *fmap, const float *src) {
+int imgmap_pushFloatValues(IMGMAP_FILE *fmap, const float *src) {
   if(!fmap->data)
     return IMGMAP_EINVALIDFILE;
   size_t numPixels = fmap->nc*fmap->sx*fmap->sy*fmap->nl;

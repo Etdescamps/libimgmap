@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
   imgmap_getDimensions(&fmap, &sx, &sy, &nc, &nl);
   size_t i, nPix = sx*sy*nc*nl;
   float *f = calloc(sx*sy*nc*nl, sizeof(float));
-  imgmap_getFloatValue(&fmap, f);
+  imgmap_getFloatValues(&fmap, f);
   for(i = 0; i < nPix; i++) {
     printf("%.1f ", f[i]);
     if(i%20 == 0)
