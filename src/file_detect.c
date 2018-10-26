@@ -15,14 +15,25 @@
  */
 
 #include <string.h>
+#include <ctype.h>
+#include "data_conv.h"
 #include "file_types.h"
 #include "imgmap.h"
 
 int imgmap_getTypeKeyword(const char *p) {
   switch(*p) {
     case 'P':
-      if(p[1] >= '1' && p[1] <= '6')
-        return IMGMAPFILE_PBM;
+      switch(p[1]) {
+        case '1':
+        case '4':
+          return IMGMAPFILE_PBM;
+        case '2':
+        case '5':
+          return IMGMAPFILE_PGM;
+        case '3':
+        case '6':
+          return IMGMAPFILE_PPM;
+      }
       break;
     case 10:
       if(p[1] <= 5)
@@ -42,6 +53,45 @@ int imgmap_getTypeKeyword(const char *p) {
       break;
   }
   return IMGMAPFILE_UKN;
+}
+
+int imgmap_getTypeFilename(const char *filename) {
+  const char *pnt_ext = strrchr(filename, '.');
+  pnt_ext++; // move after the point
+  unsigned char ext[4] = {0}; // For file with extention of size 4
+  int i;
+  for(i = 0; i<4; i++) {
+    if(pnt_ext == 0)
+      break;
+    ext[i] = toupper((unsigned char) pnt_ext[i]);
+  }
+  switch(ext[0]) {
+    case 'B':
+      if(ext[1]=='M' && ext[2] == 'P')
+        return IMGMAPFILE_BMP;
+      return IMGMAPFILE_UKN;
+    case 'P':
+      if(ext[1]=='C' && ext[2] == 'X')
+        return IMGMAPFILE_PCX;
+      else if(ext[2] == 'M') {
+        if(ext[1] == 'B')
+          return IMGMAPFILE_PBM;
+        else if(ext[1] == 'G')
+          return IMGMAPFILE_PGM;
+        else if(ext[1] == 'P')
+          return IMGMAPFILE_PPM;
+      }
+      return IMGMAPFILE_UKN;
+    case 'T':
+      if(ext[1]=='I' && ext[2]=='F') {
+        if(is_short16LE())
+          return IMGMAPFILE_TIFFLE;
+        else
+          return IMGMAPFILE_TIFFBE;
+      }
+    default:
+      return IMGMAPFILE_UKN;
+  }
 }
 
 int imgmap_fileTypeInit(IMGMAP_FILE *fmap, int file_type) {

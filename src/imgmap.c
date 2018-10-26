@@ -148,6 +148,8 @@ int imgmap_createImg(IMGMAP_FILE *fmap, const char *name, int mode,
   fmap->sx = sx;
   fmap->sy = sy;
   fmap->nc = nc;
+  if(file_type == IMGMAPFILE_UKN) // Use extension for determining type
+    file_type = imgmap_getTypeFilename(name);
   switch(file_type) {
     case IMGMAPFILE_PBM:
       return imgmap_createPBM(fmap, name, mode, 4, max_val);

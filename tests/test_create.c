@@ -3,11 +3,11 @@
 #include <sys/mman.h>
 #include "imgmap.h"
 
-int test_createImg(const char *name, int file_type, const float *values,
+int test_createImg(const char *name, const float *values,
     int nc, int sx, int sy, int max_val) {
   IMGMAP_FILE fmap;
   int ret = imgmap_createImg(&fmap, name, IMGMAP_RWSHARED,
-      file_type, nc, sx, sy, max_val);
+      IMGMAPFILE_UKN, nc, sx, sy, max_val);
   if(ret<0)
     return ret;
   ret = imgmap_pushFloatValue(&fmap, values);
@@ -30,14 +30,14 @@ int main(int argc, char **argv) {
       g[i][j][1] = ((float) i*j)/4096.0;
       g[i][j][2] = ((float) i*(64-j))/4096.0;
     }
-  int ret = test_createImg("test.pgm", IMGMAPFILE_PGM, (float*) f, 1, 64, 64, 255);
+  int ret = test_createImg("test.pgm", (float*) f, 1, 64, 64, 255);
   if(ret<0)
     return ret;
-  ret = test_createImg("test2.pgm", IMGMAPFILE_PGM, (float*) f, 1, 64, 64, 65535);
+  ret = test_createImg("test2.pgm", (float*) f, 1, 64, 64, 65535);
   if(ret<0)
     return ret;
-  ret = test_createImg("test.ppm", IMGMAPFILE_PPM, (float*) g, 1, 64, 64, 255);
+  ret = test_createImg("test.ppm", (float*) g, 1, 64, 64, 255);
   if(ret<0)
     return ret;
-  return test_createImg("test2.ppm", IMGMAPFILE_PPM, (float*) g, 1, 64, 64, 65535);
+  return test_createImg("test2.ppm", (float*) g, 1, 64, 64, 65535);
 }
