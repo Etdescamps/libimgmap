@@ -45,6 +45,8 @@ inline static int _protflags(int mode) {
 
 inline static int _mapflags(int mode) {
   switch(mode) {
+    case IMGMAP_ANONYMOUS:
+      return MAP_PRIVATE | MAP_ANONYMOUS;
     case IMGMAP_READPRIVATE:
     case IMGMAP_RWPRIVATE:
       return MAP_PRIVATE;
@@ -82,6 +84,19 @@ int imgmap_memSync(void *begin, void *end, int mode) {
   return msync((void*) p, len, m);
 }
 
+int imgmap_mapBuffer(IMGMAP_FILE *fmap, size_t size, int mode, int file_id) {
+  size_t page_size = (size_t) getpagesize();
+  fmap->map_size = ((size-1)/page_size+1)*page_size;
+    fmap->map = mmap(NULL, fmap->map_size, _protflags(mode),
+      _mapflags(mode), file_id, 0);
+  if(fmap->map == NULL)
+    return IMGMAP_EMMAP;
+  fmap->mode = mode;
+  fmap->end = (void*) ((char*) fmap->map) + size;
+  fmap->file_id = -1; // useful when the file is opened by the program
+  return IMGMAP_OK;
+}
+
 // Interface for loading by file_id instead of path
 int imgmap_loadMap(IMGMAP_FILE *fmap, int file_id, int mode) {
   struct stat statbuf;
@@ -89,17 +104,7 @@ int imgmap_loadMap(IMGMAP_FILE *fmap, int file_id, int mode) {
     return IMGMAP_ESTATFILE;
   if(statbuf.st_size <= 4)
     return IMGMAP_EINVALIDFILE;
-  size_t page_size = (size_t) getpagesize();
-  size_t data_size = statbuf.st_size;
-  fmap->map_size = ((data_size-1)/page_size+1)*page_size;
-  fmap->map = mmap(NULL, fmap->map_size, _protflags(mode),
-      _mapflags(mode), file_id, 0);
-  if(fmap->map == NULL)
-    return IMGMAP_EMMAP;
-  fmap->mode = mode;
-  fmap->end = (void*) ((char*) fmap->map) + data_size;
-  fmap->file_id = -1; // useful when the file is opened by the program
-  return IMGMAP_OK;
+  return imgmap_mapBuffer(fmap, statbuf.st_size, mode, file_id);
 }
 
 int imgmap_loadMapFile(IMGMAP_FILE *fmap, const char *name, int mode) {

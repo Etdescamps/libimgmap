@@ -21,6 +21,8 @@
 int imgmap_loadMapId(IMGMAP_FILE *fmap, int file_id, int mode);
 int imgmap_loadMapFile(IMGMAP_FILE *fmap, const char *name, int mode);
 
+int imgmap_mapBuffer(IMGMAP_FILE *fmap, size_t size, int mode, int file_id);
+
 int imgmap_createFile(IMGMAP_FILE *fmap, size_t size,
     const char *name, int mode);
 int imgmap_memSync(void *begin, void *end, int mode);

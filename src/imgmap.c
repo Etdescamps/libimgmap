@@ -16,11 +16,27 @@
 
 #include <string.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include "imgmap.h"
 #include "file_map.h"
 #include "file_parse.h"
 #include "file_types.h"
 #include "data_conv.h"
+
+IMGMAP_FILE *imgmap_allocate() {
+  IMGMAP_FILE *fmap = malloc(sizeof(IMGMAP_FILE));
+  if(!fmap)
+    return NULL;
+  fmap->map = NULL;
+  fmap->file_id = -1;
+  return fmap;
+}
+
+int imgmap_free(IMGMAP_FILE *fmap) {
+  int ret = imgmap_close(fmap);
+  free(fmap);
+  return ret;
+}
 
 int imgmap_syncPart(IMGMAP_FILE *fmap, int flags, void *begin, void *end) {
   if(!fmap || begin >= end)
@@ -42,6 +58,48 @@ int imgmap_close(IMGMAP_FILE *fmap) {
   } 
   if(fmap->file_id > 2)
     return close(fmap->file_id);
+  return IMGMAP_OK;
+}
+
+int imgmap_createBuffer(IMGMAP_FILE *fmap, int data_type,
+    int nl, int nc, int sx, int sy) {
+  size_t dx = nc*sx;
+  size_t numValues = nl*sy*dx;
+  size_t size;
+  switch(data_type) {
+    case IMGMAP_RAW1BYTE:
+      size = numValues;
+      break;
+    case IMGMAP_RAW2BYTELE:
+    case IMGMAP_RAW2BYTEBE:
+    case IMGMAP_FLOAT16BE:
+    case IMGMAP_FLOAT16LE:
+      size = 2*numValues;
+      break;
+    case IMGMAP_FLOAT32LE:
+    case IMGMAP_FLOAT32BE:
+      size = 4*numValues;
+      break;
+    case IMGMAP_FLOAT64LE:
+    case IMGMAP_FLOAT64BE:
+      size = 8*numValues;
+      break;
+    case IMGMAP_RAW1BPP:
+      dx = ((dx-1)/8+1)*8;
+      size = nl*sy*dx;
+    break;
+    default:
+      return IMGMAP_ENOTSUPPORTED;
+  }
+  int ret = imgmap_mapBuffer(fmap, size, IMGMAP_ANONYMOUS, 0);
+  if(ret < 0)
+    return IMGMAP_EMMAP;
+  fmap->dx = dx;
+  fmap->sx = sx;
+  fmap->sy = sy;
+  fmap->nc = nc;
+  fmap->nl = nl;
+  fmap->data = fmap->map;
   return IMGMAP_OK;
 }
 

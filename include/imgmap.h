@@ -40,7 +40,8 @@ enum IMGMAP_MODES {
   IMGMAP_READPRIVATE = 0,
   IMGMAP_RWPRIVATE   = 1, // Modification are not saved!!
   IMGMAP_READSHARED  = 2, // Data can be modified by another process!!
-  IMGMAP_RWSHARED    = 3
+  IMGMAP_RWSHARED    = 3,
+  IMGMAP_ANONYMOUS   = 4
 };
 
 enum IMGMAP_SYNC {
@@ -58,7 +59,13 @@ enum IMGMAP_TYPES {
   IMGMAP_TEXTPBM    = 3, // Text format used by PPM/PGM/PBM
   IMGMAP_RAW1BPP    = 4, // Raw bitmap used by PPM
   IMGMAP_RAW2BPP    = 5,
-  IMGMAP_RAW4BPP    = 3
+  IMGMAP_RAW4BPP    = 6,
+  IMGMAP_FLOAT32LE  = 7,
+  IMGMAP_FLOAT32BE  = 8,
+  IMGMAP_FLOAT64LE  = 9,
+  IMGMAP_FLOAT64BE  = 10,
+  IMGMAP_FLOAT16LE  = 11,
+  IMGMAP_FLOAT16BE  = 12,
 };
 
 enum IMGMAP_PALETTES {
@@ -98,10 +105,15 @@ typedef struct {
   void *palette; // Pointer to the color palette
 } IMGMAP_FILE;
 
+IMGMAP_FILE *imgmap_allocate();
+int imgmap_free(IMGMAP_FILE *fmap);
+
 int imgmap_close(IMGMAP_FILE *fmap);
 int imgmap_open(IMGMAP_FILE *fmap, const char *name, int mode);
 int imgmap_createImg(IMGMAP_FILE *fmap, const char *name, int mode,
     int file_type, int nc, int sx, int sy, int max_val);
+int imgmap_createBuffer(IMGMAP_FILE *fmap, int data_type,
+    int nl, int nc, int sx, int sy);
 
 // Sync the whole file
 int imgmap_sync(IMGMAP_FILE *fmap, int flags);
