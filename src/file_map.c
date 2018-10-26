@@ -20,9 +20,10 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include "file_map.h"
 
-static int _openflags(int mode) {
+inline static int _openflags(int mode) {
   switch(mode) {
     case IMGMAP_READPRIVATE:
     case IMGMAP_READSHARED:
@@ -32,7 +33,7 @@ static int _openflags(int mode) {
   }
 }
 
-static int _protflags(int mode) {
+inline static int _protflags(int mode) {
   switch(mode) {
     case IMGMAP_READPRIVATE:
     case IMGMAP_READSHARED:
@@ -42,14 +43,43 @@ static int _protflags(int mode) {
   }
 }
 
-static int _mapflags(int mode) {
+inline static int _mapflags(int mode) {
   switch(mode) {
     case IMGMAP_READPRIVATE:
     case IMGMAP_RWPRIVATE:
-      return MAP_SHARED;
-    default:
       return MAP_PRIVATE;
+    default:
+      return MAP_SHARED;
   }
+}
+
+inline static int _syncflags(int mode) {
+  switch(mode) {
+    case IMGMAP_ASYNC:
+      return MS_ASYNC;
+    case IMGMAP_SYNC:
+      return MS_SYNC;
+    case IMGMAP_INVALIDATE:
+      return MS_INVALIDATE;
+    default:
+      return -1;
+  }
+}
+
+int imgmap_unmap(IMGMAP_FILE *fmap) {
+  int ret = munmap(fmap->map, fmap->map_size);
+  fmap->map = NULL;
+  return ret;
+}
+
+int imgmap_memSync(void *begin, void *end, int mode) {
+  int m = _syncflags(mode);
+  if(m<0)
+    return -1;
+  uintptr_t p = (uintptr_t) begin;
+  p = (p/getpagesize())*getpagesize();
+  size_t len = ((uintptr_t) end) - p;
+  return msync((void*) p, len, m);
 }
 
 // Interface for loading by file_id instead of path
@@ -68,6 +98,7 @@ int imgmap_loadMap(IMGMAP_FILE *fmap, int file_id, int mode) {
     return IMGMAP_EMMAP;
   fmap->mode = mode;
   fmap->end = (void*) ((char*) fmap->map) + data_size;
+  fmap->file_id = -1; // useful when the file is opened by the program
   return IMGMAP_OK;
 }
 
@@ -76,8 +107,10 @@ int imgmap_loadMapFile(IMGMAP_FILE *fmap, const char *name, int mode) {
   if(file_id < -1)
     return IMGMAP_EOPENFILE;
   int ret = imgmap_loadMap(fmap, file_id, mode);
-  // Mapped files can be closed (they are still referenced)
-  close(file_id);
+  if(ret < 0)
+    close(file_id); // Error, so close the file
+  else
+    fmap->file_id = file_id; // Handle the file closing afterwards
   return ret;
 }
 
@@ -98,8 +131,10 @@ int imgmap_createFile(IMGMAP_FILE *fmap, size_t size,
   if(file_id < -1)
     return IMGMAP_EOPENFILE;
   int ret = _resizeFile(fmap, size, file_id, mode);
-  // Mapped files can be closed (they are still referenced)
-  close(file_id);
+  if(ret < 0)
+    close(file_id); // Error, so close the file
+  else
+    fmap->file_id = file_id; // Handle the file closing afterwards
   return ret;
 }
 

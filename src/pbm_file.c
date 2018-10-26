@@ -120,6 +120,6 @@ int imgmap_createPBM(IMGMAP_FILE *fmap, const char *name, int mode,
   if(ret<0)
     return ret;
   memcpy(fmap->map, buffer, k);
-  return IMGMAP_OK;
+  return imgmap_memSync(fmap->map, fmap->data, IMGMAP_ASYNC);
 }
 

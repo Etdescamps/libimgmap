@@ -14,20 +14,34 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <sys/mman.h>
 #include <string.h>
+#include <unistd.h>
 #include "imgmap.h"
 #include "file_map.h"
 #include "file_parse.h"
 #include "file_types.h"
 #include "data_conv.h"
 
-#define TEXT_BUFFER_SIZE__ 256
+int imgmap_syncPart(IMGMAP_FILE *fmap, int flags, void *begin, void *end) {
+  if(!fmap || begin >= end)
+    return -1;
+  if(begin < fmap->map)
+    return -1;
+  if(end >= fmap->end)
+    return -1;
+  return imgmap_memSync(begin, end, flags);
+}
+
+int imgmap_sync(IMGMAP_FILE *fmap, int flags) {
+  return imgmap_memSync(fmap->map, fmap->end, flags);
+}
 
 int imgmap_close(IMGMAP_FILE *fmap) {
-  if(fmap->map)
-    return munmap(fmap->map, fmap->map_size);
-  fmap->map = NULL;
+  if(fmap->map) {
+    return imgmap_unmap(fmap);
+  } 
+  if(fmap->file_id > 2)
+    return close(fmap->file_id);
   return IMGMAP_OK;
 }
 

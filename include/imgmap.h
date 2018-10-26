@@ -38,9 +38,15 @@ enum IMGMAP_ERRORS {
 
 enum IMGMAP_MODES {
   IMGMAP_READPRIVATE = 0,
-  IMGMAP_RWPRIVATE   = 1,
-  IMGMAP_READSHARED  = 2,
+  IMGMAP_RWPRIVATE   = 1, // Modification are not saved!!
+  IMGMAP_READSHARED  = 2, // Data can be modified by another process!!
   IMGMAP_RWSHARED    = 3
+};
+
+enum IMGMAP_SYNC {
+  IMGMAP_ASYNC      = 0,
+  IMGMAP_SYNC       = 1,
+  IMGMAP_INVALIDATE = 2
 };
 
 enum IMGMAP_TYPES {
@@ -81,6 +87,7 @@ typedef struct {
   size_t map_size; // Size of the map
   void *data; // Start of the raw image data
   void *end; // Size of the raw data segment
+  int file_id;
   int mode; // Mode used for opening/creating the file
   int data_type; // Type of the raw data
   int sx, sy; // Size in x and y
@@ -95,6 +102,12 @@ int imgmap_close(IMGMAP_FILE *fmap);
 int imgmap_open(IMGMAP_FILE *fmap, const char *name, int mode);
 int imgmap_createImg(IMGMAP_FILE *fmap, const char *name, int mode,
     int file_type, int nc, int sx, int sy, int max_val);
+
+// Sync the whole file
+int imgmap_sync(IMGMAP_FILE *fmap, int flags);
+
+// Sync only a part of the image
+int imgmap_syncPart(IMGMAP_FILE *fmap, int flags, void *begin, void *end);
 
 int imgmap_getDimensions(const IMGMAP_FILE *fmap, int *sx, int *sy,
     int *nc, int *nl);
