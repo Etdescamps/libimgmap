@@ -109,7 +109,7 @@ int imgmap_createPBM(IMGMAP_FILE *fmap, const char *name, int mode,
     int type, int max_val) {
   char buffer[TEXT_BUFFER_SIZE__];
   int k = snprintf(buffer, TEXT_BUFFER_SIZE__,
-                   "P%d\n#fastpbm\n%d %d\n",
+                   "P%d\n#imgmap0\n%d %d\n",
                    type, fmap->sx, fmap->sy);
   fmap->max_val = max_val;
   if(type != 4)
