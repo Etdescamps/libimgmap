@@ -154,15 +154,16 @@ int imgmap_createImgSpec(IMGMAP_FILE *fmap, const char *name, int file_type,
   fmap->sy = sy;
   fmap->nc = nc;
   fmap->nl = nl;
+  fmap->max_val = max_val;
   if(file_type == IMGMAPFILE_UKN) // Use extension for determining type
     file_type = imgmap_getTypeFilename(name);
   switch(file_type) {
     case IMGMAPFILE_PBM:
-      return imgmap_createPBM(fmap, name, mode, 4, max_val);
+      return imgmap_createPBM(fmap, name, mode, 4);
     case IMGMAPFILE_PGM:
-      return imgmap_createPBM(fmap, name, mode, 5, max_val);
+      return imgmap_createPBM(fmap, name, mode, 5);
     case IMGMAPFILE_PPM:
-      return imgmap_createPBM(fmap, name, mode, 6, max_val);
+      return imgmap_createPBM(fmap, name, mode, 6);
     default:
       return IMGMAP_ENOTSUPPORTED;
   }

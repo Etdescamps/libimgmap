@@ -113,6 +113,7 @@ int imgmap_free(IMGMAP_FILE *fmap);
 
 int imgmap_close(IMGMAP_FILE *fmap);
 int imgmap_open(IMGMAP_FILE *fmap, const char *name, int mode);
+
 // Create a new image
 // sx, sy -> image dimension in pixels
 // optional parameters:

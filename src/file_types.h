@@ -23,8 +23,7 @@ int imgmap_getTypeKeyword(const char *p);
 int imgmap_fileTypeInit(IMGMAP_FILE *fmap, int file_type);
 
 int imgmap_pgm_readHeader(IMGMAP_FILE *fmap);
-int imgmap_createPBM(IMGMAP_FILE *fmap, const char *name, int mode,
-    int type, int max_val);
+int imgmap_createPBM(IMGMAP_FILE *fmap, const char *name, int mode, int type);
 int imgmap_getTypeFilename(const char *filename);
 
 #endif

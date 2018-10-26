@@ -105,18 +105,27 @@ int imgmap_pgm_readHeader(IMGMAP_FILE *fmap) {
   return IMGMAP_OK;
 }
 
-int imgmap_createPBM(IMGMAP_FILE *fmap, const char *name, int mode,
-    int type, int max_val) {
-  if(max_val<0)
-    max_val = (mode == 1 || mode == 4) ? 1 : 255;
+int imgmap_createPBM(IMGMAP_FILE *fmap, const char *name, int mode, int type) {
+  if(fmap->nc > 0) { // Look at the default value for nc
+    if(fmap->nc == 3) // Force RGB if the number of channels is set to 3
+      type = 6;
+    // Force greyscale if the number of channels is set to 1
+    if(fmap->nc == 1 && type == 6)
+      type = 5;
+    // Invalid cases not supported by the format
+    if(fmap->nc == 2 || fmap->nc > 3)
+      return IMGMAP_EINVALIDFILE;
+  }
+  if(fmap->max_val<0)
+    fmap->max_val = (mode == 1 || mode == 4) ? 1 : 255;
+  // Otherwise nc = -1 and the value corresponding to the type is choosen
   char buffer[TEXT_BUFFER_SIZE__];
   int k = snprintf(buffer, TEXT_BUFFER_SIZE__,
                    "P%d\n#imgmap0\n%d %d\n",
                    type, fmap->sx, fmap->sy);
-  fmap->max_val = max_val;
   if(type != 4)
     k += snprintf(&buffer[k], TEXT_BUFFER_SIZE__-k,
-                   "%d\n", max_val);
+                   "%d\n", fmap->max_val);
   size_t size = k + _pbm_configure(fmap, type);
   int ret = imgmap_createFile(fmap, size, name, mode);
   if(ret<0)

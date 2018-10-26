@@ -25,6 +25,16 @@ as the address space of these system is quite huge.
 ## License
 This library is distributed under an ISC-like license (simplified BSD license).
 
+## Getting started
+After having clone this repository, you can compile the project using CMake:
+```console
+foo@bar:libimgmap$ mkdir build 
+foo@bar:libimgmap$ cd build
+foo@bar:build$ cmake ..
+foo@bar:build$ make
+foo@bar:build$ sudo make install
+```
+
 ## Limitations
 Windows is not supported as its file mapping methods are quite different from
 those used by Unix likes. This library is heavily relying on features provided
