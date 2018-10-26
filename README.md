@@ -27,4 +27,5 @@ This library is distributed under an ISC-like license (simplified BSD license).
 
 ## Limitations
 Windows is not supported as its file mapping methods are quite different.
+Heavily based on UNIX systems features.
 

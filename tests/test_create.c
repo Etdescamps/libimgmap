@@ -3,17 +3,41 @@
 #include <sys/mman.h>
 #include "imgmap.h"
 
-int main(int argc, char **argv) {
+int test_createImg(const char *name, int file_type, const float *values,
+    int nc, int sx, int sy, int max_val) {
   IMGMAP_FILE fmap;
-  int ret = imgmap_createImg(&fmap, "test.pgm", IMGMAP_RWSHARED,
-      IMGMAPFILE_PGM, 1, 64, 64, 255);
+  int ret = imgmap_createImg(&fmap, name, IMGMAP_RWSHARED,
+      file_type, nc, sx, sy, max_val);
+  if(ret<0)
+    return ret;
+  ret = imgmap_pushFloatValue(&fmap, values);
+  if(ret<0)
+    return ret;
+  ret = imgmap_sync(&fmap, IMGMAP_SYNC);
+  if(ret<0)
+    return ret;
+  return imgmap_close(&fmap);
+}
+
+int main(int argc, char **argv) {
   float f[64][64];
+  float g[64][64][3];
   int i,j;
   for(i=0; i<64; i++)
-    for(j=0; j<64; j++)
+    for(j=0; j<64; j++) {
       f[i][j] = ((float) (64-i)*j)/4096.0;
-  imgmap_pushFloatValue(&fmap, (float *) f);
-  imgmap_sync(&fmap, IMGMAP_SYNC);
-  imgmap_close(&fmap);
-  return ret;
+      g[i][j][0] = ((float) (64-i)*j)/4096.0;
+      g[i][j][1] = ((float) i*j)/4096.0;
+      g[i][j][2] = ((float) i*(64-j))/4096.0;
+    }
+  int ret = test_createImg("test.pgm", IMGMAPFILE_PGM, (float*) f, 1, 64, 64, 255);
+  if(ret<0)
+    return ret;
+  ret = test_createImg("test2.pgm", IMGMAPFILE_PGM, (float*) f, 1, 64, 64, 65535);
+  if(ret<0)
+    return ret;
+  ret = test_createImg("test.ppm", IMGMAPFILE_PPM, (float*) g, 1, 64, 64, 255);
+  if(ret<0)
+    return ret;
+  return test_createImg("test2.ppm", IMGMAPFILE_PPM, (float*) g, 1, 64, 64, 65535);
 }
