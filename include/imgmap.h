@@ -113,8 +113,17 @@ int imgmap_free(IMGMAP_FILE *fmap);
 
 int imgmap_close(IMGMAP_FILE *fmap);
 int imgmap_open(IMGMAP_FILE *fmap, const char *name, int mode);
-int imgmap_createImg(IMGMAP_FILE *fmap, const char *name,
-    int file_type, int nc, int sx, int sy, int max_val);
+// Create a new image
+// sx, sy -> image dimension in pixels
+// optional parameters:
+// type = IMGMAPFILE_UKN -> type determined by extension by default
+// nc = -1         Number of channels (default 3 if RGB, 1 if greyscale)
+// nl = -1         Number of layers (default 1)
+// max_val = -1    Maximum value of an element (default 255)
+int imgmap_createImgSpec(IMGMAP_FILE *fmap, const char *name, int file_type,
+    int sx, int sy, int nc, int nl, int max_val);
+// Create a new image with simplier interface
+int imgmap_createImg(IMGMAP_FILE *fmap, const char *name, int sx, int sy);
 int imgmap_createBuffer(IMGMAP_FILE *fmap, int data_type,
     int nl, int nc, int sx, int sy);
 

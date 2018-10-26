@@ -143,12 +143,17 @@ int imgmap_getDimensions(const IMGMAP_FILE *fmap, int *sx, int *sy,
   return 0;
 }
 
-int imgmap_createImg(IMGMAP_FILE *fmap, const char *name,
-    int file_type, int nc, int sx, int sy, int max_val) {
+int imgmap_createImg(IMGMAP_FILE *fmap, const char *name, int sx, int sy) {
+  return imgmap_createImgSpec(fmap, name, IMGMAPFILE_UKN, sx, sy, -1, -1, -1);
+}
+
+int imgmap_createImgSpec(IMGMAP_FILE *fmap, const char *name, int file_type,
+    int sx, int sy, int nc, int nl, int max_val) {
   int mode = IMGMAP_RWSHARED; // The only suitable mode for creating file
   fmap->sx = sx;
   fmap->sy = sy;
   fmap->nc = nc;
+  fmap->nl = nl;
   if(file_type == IMGMAPFILE_UKN) // Use extension for determining type
     file_type = imgmap_getTypeFilename(name);
   switch(file_type) {
