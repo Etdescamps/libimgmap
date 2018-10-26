@@ -39,7 +39,7 @@ static int _pbmNextInt(const char **p, const char *end) {
 }
 
 // Configure fmap in order to match the file structure
-static size_t _pgm_configure(IMGMAP_FILE *fmap, int type) {
+static size_t _pbm_configure(IMGMAP_FILE *fmap, int type) {
   fmap->palette = NULL; // No palette support on this type
   fmap->nl = 1; // Supports only one layer
 
@@ -100,7 +100,7 @@ int imgmap_pgm_readHeader(IMGMAP_FILE *fmap) {
     fmap->max_val = 1;
   ++p; // Ignore one space character
   fmap->data = (void*) p;
-  if(_pgm_configure(fmap, type) == 0)
+  if(_pbm_configure(fmap, type) == 0)
     return IMGMAP_EINVALIDFILE;
   return IMGMAP_OK;
 }
@@ -115,11 +115,12 @@ int imgmap_createPBM(IMGMAP_FILE *fmap, const char *name, int mode,
   if(type != 4)
     k += snprintf(&buffer[k], TEXT_BUFFER_SIZE__-k,
                    "%d\n", max_val);
-  size_t size = k + _pgm_configure(fmap, type);
+  size_t size = k + _pbm_configure(fmap, type);
   int ret = imgmap_createFile(fmap, size, name, mode);
   if(ret<0)
     return ret;
   memcpy(fmap->map, buffer, k);
+  fmap->data = &((char*) fmap->map)[k];
   return imgmap_memSync(fmap->map, fmap->data, IMGMAP_ASYNC);
 }
 

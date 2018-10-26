@@ -30,7 +30,7 @@ void imgmap_convFloatToShort(unsigned short *val, const float *p,
     size_t size, int max_val);
 void imgmap_convFloatToInvShort(unsigned short *val, const float *p,
     size_t size, int max_val);
-void imgmap_convFloatToByte(char *val, const float *p,
+void imgmap_convFloatToByte(unsigned char *val, const float *p,
     size_t size, int max_val);
 void imgmap_convPBMToFloat(float *dest, const char *src,
     size_t nlines, size_t sx);

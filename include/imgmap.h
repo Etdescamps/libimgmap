@@ -113,6 +113,7 @@ int imgmap_getDimensions(const IMGMAP_FILE *fmap, int *sx, int *sy,
     int *nc, int *nl);
 
 int imgmap_getFloatValue(IMGMAP_FILE *fmap, float *dest);
+int imgmap_pushFloatValue(IMGMAP_FILE *fmap, const float *src);
 
 #ifdef __cplusplus
 }

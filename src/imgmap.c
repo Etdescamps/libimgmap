@@ -142,3 +142,36 @@ int imgmap_getFloatValue(IMGMAP_FILE *fmap, float *dest) {
   }
 }
 
+int imgmap_pushFloatValue(IMGMAP_FILE *fmap, const float *src) {
+  if(!fmap->data)
+    return IMGMAP_EINVALIDFILE;
+  size_t numPixels = fmap->nc*fmap->sx*fmap->sy*fmap->nl;
+  unsigned char *data = fmap->data;
+  switch(fmap->data_type) {
+    case IMGMAP_RAW1BYTE:
+      imgmap_convFloatToByte(data, src, numPixels, fmap->max_val);
+      return IMGMAP_OK;
+    case IMGMAP_RAW2BYTEBE:
+      if(is_short16LE())
+        imgmap_convFloatToInvShort((unsigned short*) data, src,
+            numPixels, fmap->max_val);
+      else
+        imgmap_convFloatToShort((unsigned short*) data, src,
+            numPixels, fmap->max_val);
+      return IMGMAP_OK;
+    case IMGMAP_RAW2BYTELE:
+      if(is_short16LE())
+        imgmap_convFloatToShort((unsigned short*) data, src,
+            numPixels, fmap->max_val);
+      else
+        imgmap_convFloatToInvShort((unsigned short*) data, src,
+            numPixels, fmap->max_val);
+      return IMGMAP_OK;
+    case IMGMAP_RAW1BPP:
+      // TODO
+    case IMGMAP_TEXTPBM: // This one in not applicable
+    default:
+      return IMGMAP_EINVALIDFILE;
+  }
+}
+

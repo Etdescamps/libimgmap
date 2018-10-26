@@ -70,7 +70,7 @@ void imgmap_convFloatToInvShort(unsigned short *val, const float *p,
   size_t i;
   float mv = max_val;
   for(i=0; i<size; i++) {
-    val[i] = _bswap16((unsigned short) mv*p[i]);
+    val[i] = _bswap16((unsigned short) (mv*p[i]));
   }
 }
 
@@ -79,16 +79,16 @@ void imgmap_convFloatToShort(unsigned short *val, const float *p,
   size_t i;
   float mv = max_val;
   for(i=0; i<size; i++) {
-    val[i] = (unsigned short) mv*p[i];
+    val[i] = (unsigned short) (mv*p[i]);
   }
 }
 
-void imgmap_convFloatToByte(char *val, const float *p,
+void imgmap_convFloatToByte(unsigned char *val, const float *p,
     size_t size, int max_val) {
   size_t i;
   float mv = max_val;
   for(i=0; i<size; i++) {
-    val[i] = (char) mv*p[i];
+    val[i] = (unsigned char) (mv*p[i]);
   }
 }
 
